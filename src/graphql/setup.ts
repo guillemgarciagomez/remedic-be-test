@@ -4,6 +4,8 @@ import { buildSchema } from 'type-graphql';
 import { ConsultationResolver } from './resolvers/Consultation.resolver';
 import { PatientResolver } from './resolvers/Patient.resolver';
 import { ApolloContext, dbConnection } from './apolloContext';
+import { Patient } from '../models/Patient';
+import { Consultation } from '../models/Consultation';
 
 const setupApolloServer = async (em : dbConnection) =>
   new ApolloServer({
@@ -12,9 +14,10 @@ const setupApolloServer = async (em : dbConnection) =>
       validate: false
     }),
     context: (req: Request, res: Response) : ApolloContext => ({
+      patients: em.getRepository(Patient),
+      consultations: em.getRepository(Consultation),
       req,
-      res,
-      em
+      res
     })
   });
 

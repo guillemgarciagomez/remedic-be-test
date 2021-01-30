@@ -6,17 +6,17 @@ import { ApolloContext } from "../apolloContext";
 export class PatientResolver {
 
   @Query(() => [Patient])
-  patients( @Ctx() { em }: ApolloContext) {
-    return em.find(Patient, {})
+  patients( @Ctx() { patients }: ApolloContext) {
+    return patients.find({}, {populate: ['consultations']})
   }
 
   @Mutation(() => Patient)
   async createPatient(
     @Arg("name", () => String) name : string,
-    @Ctx() { em }: ApolloContext
+    @Ctx() { patients }: ApolloContext
   ) {
-    const patient = em.create(Patient, {name});
-    await em.persistAndFlush(patient);
+    const patient = patients.create({name});
+    await patients.persistAndFlush(patient);
     return patient;
   }
 
